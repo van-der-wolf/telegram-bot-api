@@ -1784,6 +1784,26 @@ func (config InvoiceConfig) method() string {
 	return "sendInvoice"
 }
 
+type InvoiceLinkConfig struct {
+	InvoiceConfig
+	SubscriptionPeriod int
+}
+
+func (config InvoiceLinkConfig) params() (Params, error) {
+	params, err := config.InvoiceConfig.params()
+	if err != nil {
+		return params, err
+	}
+
+	params.AddNonZero("subscription_period", config.SubscriptionPeriod)
+
+	return params, nil
+}
+
+func (config InvoiceLinkConfig) method() string {
+	return "createInvoiceLink"
+}
+
 // ShippingConfig contains information for answerShippingQuery request.
 type ShippingConfig struct {
 	ShippingQueryID string // required
