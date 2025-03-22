@@ -49,7 +49,17 @@ func (p Params) AddInterface(key string, value interface{}) error {
 	if value == nil || (reflect.ValueOf(value).Kind() == reflect.Ptr && reflect.ValueOf(value).IsNil()) {
 		return nil
 	}
-
+	switch v := value.(type) {
+	case []interface{}:
+		if len(v) > 0 {
+			return nil
+		}
+	case []string:
+		return nil
+	case []int:
+		return nil
+		// Add other slice types as needed
+	}
 	b, err := json.Marshal(value)
 	if err != nil {
 		return err

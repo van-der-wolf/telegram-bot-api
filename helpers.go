@@ -777,6 +777,19 @@ func NewInvoice(chatID int64, title, description, payload, providerToken, startP
 		Prices:         prices}
 }
 
+func NewInvoiceLink(chatID int64, title, description, payload, providerToken, currency string, subscriptionPeriod int, prices []LabeledPrice) InvoiceLinkConfig {
+	return InvoiceLinkConfig{
+		BaseChat:           BaseChat{ChatID: chatID},
+		Title:              title,
+		Description:        description,
+		Payload:            payload,
+		SubscriptionPeriod: subscriptionPeriod,
+		ProviderToken:      providerToken,
+		Currency:           currency,
+		Prices:             prices,
+	}
+}
+
 // NewChatTitle allows you to update the title of a chat.
 func NewChatTitle(chatID int64, title string) SetChatTitleConfig {
 	return SetChatTitleConfig{

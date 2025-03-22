@@ -1785,17 +1785,59 @@ func (config InvoiceConfig) method() string {
 }
 
 type InvoiceLinkConfig struct {
-	InvoiceConfig
-	SubscriptionPeriod int
+	BaseChat
+	Title                     string         // required
+	Description               string         // required
+	Payload                   string         // required
+	ProviderToken             string         // required
+	Currency                  string         // required
+	Prices                    []LabeledPrice // required
+	SubscriptionPeriod        int
+	MaxTipAmount              int
+	SuggestedTipAmounts       []int
+	ProviderData              string
+	PhotoURL                  string
+	PhotoSize                 int
+	PhotoWidth                int
+	PhotoHeight               int
+	NeedName                  bool
+	NeedPhoneNumber           bool
+	NeedEmail                 bool
+	NeedShippingAddress       bool
+	SendPhoneNumberToProvider bool
+	SendEmailToProvider       bool
+	IsFlexible                bool
 }
 
 func (config InvoiceLinkConfig) params() (Params, error) {
-	params, err := config.InvoiceConfig.params()
+	params, err := config.BaseChat.params()
 	if err != nil {
 		return params, err
 	}
 
+	params["title"] = config.Title
+	params["description"] = config.Description
+	params["payload"] = config.Payload
+	params["provider_token"] = config.ProviderToken
+	params["currency"] = config.Currency
+	if err = params.AddInterface("prices", config.Prices); err != nil {
+		return params, err
+	}
 	params.AddNonZero("subscription_period", config.SubscriptionPeriod)
+	params.AddNonZero("max_tip_amount", config.MaxTipAmount)
+	err = params.AddInterface("suggested_tip_amounts", config.SuggestedTipAmounts)
+	params.AddNonEmpty("provider_data", config.ProviderData)
+	params.AddNonEmpty("photo_url", config.PhotoURL)
+	params.AddNonZero("photo_size", config.PhotoSize)
+	params.AddNonZero("photo_width", config.PhotoWidth)
+	params.AddNonZero("photo_height", config.PhotoHeight)
+	params.AddBool("need_name", config.NeedName)
+	params.AddBool("need_phone_number", config.NeedPhoneNumber)
+	params.AddBool("need_email", config.NeedEmail)
+	params.AddBool("need_shipping_address", config.NeedShippingAddress)
+	params.AddBool("is_flexible", config.IsFlexible)
+	params.AddBool("send_phone_number_to_provider", config.SendPhoneNumberToProvider)
+	params.AddBool("send_email_to_provider", config.SendEmailToProvider)
 
 	return params, nil
 }
